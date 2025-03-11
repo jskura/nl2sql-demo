@@ -293,8 +293,43 @@ async def generate_basic_sql(
                 else:
                     sql = sql_and_explanation
         
+        # If SQL is still empty, try to extract from code blocks with triple backticks
+        if not sql and "```sql" in response_text.lower():
+            # Extract SQL from code blocks
+            pattern = r"```sql\s*(.*?)\s*```"
+            matches = re.findall(pattern, response_text, re.DOTALL)
+            if matches:
+                sql = matches[0].strip()
+                
+                # Try to extract explanation after the code block
+                if "Explanation:" in response_text:
+                    explanation_parts = response_text.split("Explanation:", 1)
+                    explanation = explanation_parts[1].strip()
+                elif "explanation:" in response_text.lower():
+                    explanation_parts = re.split(r"explanation:", response_text, flags=re.IGNORECASE, maxsplit=1)
+                    if len(explanation_parts) > 1:
+                        explanation = explanation_parts[1].strip()
+        
+        # If SQL is still empty, try to extract from code blocks without sql tag
+        if not sql and "```" in response_text:
+            pattern = r"```\s*(.*?)\s*```"
+            matches = re.findall(pattern, response_text, re.DOTALL)
+            if matches:
+                # Use the first code block as SQL
+                sql = matches[0].strip()
+                
+                # Try to extract explanation after the code block
+                if "Explanation:" in response_text:
+                    explanation_parts = response_text.split("Explanation:", 1)
+                    explanation = explanation_parts[1].strip()
+                elif "explanation:" in response_text.lower():
+                    explanation_parts = re.split(r"explanation:", response_text, flags=re.IGNORECASE, maxsplit=1)
+                    if len(explanation_parts) > 1:
+                        explanation = explanation_parts[1].strip()
+        
         if not sql:
             logger.warning("Failed to extract SQL from response, using fallback")
+            logger.debug(f"Full response that failed SQL extraction: {response_text}")
             sql = f"SELECT * FROM {schema.table_name} LIMIT 10"
             explanation = "Failed to generate SQL. This is a fallback query."
         
