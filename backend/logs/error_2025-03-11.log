@@ -1,0 +1,398 @@
+2025-03-11 14:22:51,614 - app.services.bigquery_service - ERROR - /Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/bigquery_service.py:393 - Error executing SQL query: 400 Syntax error: Unexpected identifier `` at [1:1]
+
+Location: US
+Job ID: fef30d54-ac97-4e1a-b600-48072a980056
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/bigquery_service.py", line 367, in execute_sql
+    results = query_job.result()
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/cloud/bigquery/job/query.py", line 1580, in result
+    do_get_result()
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/api_core/retry/retry_unary.py", line 293, in retry_wrapped_func
+    return retry_target(
+           ^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/api_core/retry/retry_unary.py", line 153, in retry_target
+    _retry_error_helper(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/api_core/retry/retry_base.py", line 212, in _retry_error_helper
+    raise final_exc from source_exc
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/api_core/retry/retry_unary.py", line 144, in retry_target
+    result = target()
+             ^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/cloud/bigquery/job/query.py", line 1570, in do_get_result
+    super(QueryJob, self).result(retry=retry, timeout=timeout)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/cloud/bigquery/job/base.py", line 922, in result
+    return super(_AsyncJob, self).result(timeout=timeout, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/google/api_core/future/polling.py", line 261, in result
+    raise self._exception
+google.api_core.exceptions.BadRequest: 400 Syntax error: Unexpected identifier `` at [1:1]
+
+Location: US
+Job ID: fef30d54-ac97-4e1a-b600-48072a980056
+
+2025-03-11 14:42:47,951 - app.services.nl2sql_service - ERROR - /Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py:903 - Error generating agent SQL: 'QueryHistoryItem' object has no attribute 'result'
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 632, in generate_agent_sql
+    if query.result:
+       ^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/pydantic/main.py", line 759, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'QueryHistoryItem' object has no attribute 'result'
+2025-03-11 18:50:33,914 - app.services.nl2sql_service - ERROR - /Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py:553 - Error generating enhanced SQL: Cannot get the response text.
+Cannot get the Candidate text.
+Response candidate content has no parts (and thus no text). The candidate is likely blocked by the safety filters.
+Content:
+{}
+Candidate:
+{
+  "content": {},
+  "finish_reason": "SAFETY",
+  "safety_ratings": [
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.15722656,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.24511719
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "probability": "MEDIUM",
+      "blocked": true,
+      "probability_score": 0.76171875,
+      "severity": "HARM_SEVERITY_MEDIUM",
+      "severity_score": 0.68359375
+    },
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.22363281,
+      "severity": "HARM_SEVERITY_NEGLIGIBLE",
+      "severity_score": 0.119140625
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.14550781,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.29101562
+    }
+  ]
+}
+Response:
+{
+  "candidates": [
+    {
+      "content": {},
+      "finish_reason": "SAFETY",
+      "safety_ratings": [
+        {
+          "category": "HARM_CATEGORY_HATE_SPEECH",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.15722656,
+          "severity": "HARM_SEVERITY_LOW",
+          "severity_score": 0.24511719
+        },
+        {
+          "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+          "probability": "MEDIUM",
+          "blocked": true,
+          "probability_score": 0.76171875,
+          "severity": "HARM_SEVERITY_MEDIUM",
+          "severity_score": 0.68359375
+        },
+        {
+          "category": "HARM_CATEGORY_HARASSMENT",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.22363281,
+          "severity": "HARM_SEVERITY_NEGLIGIBLE",
+          "severity_score": 0.119140625
+        },
+        {
+          "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.14550781,
+          "severity": "HARM_SEVERITY_LOW",
+          "severity_score": 0.29101562
+        }
+      ]
+    }
+  ],
+  "usage_metadata": {
+    "prompt_token_count": 11572,
+    "total_token_count": 11572
+  },
+  "model_version": "gemini-1.5-pro-001"
+}
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 2408, in text
+    return self.content.text
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 2486, in text
+    raise ValueError(
+ValueError: Response candidate content has no parts (and thus no text). The candidate is likely blocked by the safety filters.
+Content:
+{}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 2319, in text
+    return self.candidates[0].text
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 2412, in text
+    raise ValueError(
+ValueError: Cannot get the Candidate text.
+Response candidate content has no parts (and thus no text). The candidate is likely blocked by the safety filters.
+Content:
+{}
+Candidate:
+{
+  "content": {},
+  "finish_reason": "SAFETY",
+  "safety_ratings": [
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.15722656,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.24511719
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "probability": "MEDIUM",
+      "blocked": true,
+      "probability_score": 0.76171875,
+      "severity": "HARM_SEVERITY_MEDIUM",
+      "severity_score": 0.68359375
+    },
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.22363281,
+      "severity": "HARM_SEVERITY_NEGLIGIBLE",
+      "severity_score": 0.119140625
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.14550781,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.29101562
+    }
+  ]
+}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 527, in generate_enhanced_sql
+    result = await app.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1588, in ainvoke
+    async for chunk in self.astream(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1477, in astream
+    async for _ in runner.atick(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/runner.py", line 130, in atick
+    await arun_with_retry(t, retry_policy, stream=self.use_astream)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/retry.py", line 102, in arun_with_retry
+    await task.proc.ainvoke(task.input, config)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 453, in ainvoke
+    input = await asyncio.create_task(coro, context=context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 236, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 380, in generate_sql
+    response_text = await generate_text(prompt, max_output_tokens=VERTEX_AI_MAX_OUTPUT_TOKENS)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 71, in generate_text
+    response_text = response.text
+                    ^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 2323, in text
+    raise ValueError(
+ValueError: Cannot get the response text.
+Cannot get the Candidate text.
+Response candidate content has no parts (and thus no text). The candidate is likely blocked by the safety filters.
+Content:
+{}
+Candidate:
+{
+  "content": {},
+  "finish_reason": "SAFETY",
+  "safety_ratings": [
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.15722656,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.24511719
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "probability": "MEDIUM",
+      "blocked": true,
+      "probability_score": 0.76171875,
+      "severity": "HARM_SEVERITY_MEDIUM",
+      "severity_score": 0.68359375
+    },
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.22363281,
+      "severity": "HARM_SEVERITY_NEGLIGIBLE",
+      "severity_score": 0.119140625
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "probability": "NEGLIGIBLE",
+      "probability_score": 0.14550781,
+      "severity": "HARM_SEVERITY_LOW",
+      "severity_score": 0.29101562
+    }
+  ]
+}
+Response:
+{
+  "candidates": [
+    {
+      "content": {},
+      "finish_reason": "SAFETY",
+      "safety_ratings": [
+        {
+          "category": "HARM_CATEGORY_HATE_SPEECH",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.15722656,
+          "severity": "HARM_SEVERITY_LOW",
+          "severity_score": 0.24511719
+        },
+        {
+          "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+          "probability": "MEDIUM",
+          "blocked": true,
+          "probability_score": 0.76171875,
+          "severity": "HARM_SEVERITY_MEDIUM",
+          "severity_score": 0.68359375
+        },
+        {
+          "category": "HARM_CATEGORY_HARASSMENT",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.22363281,
+          "severity": "HARM_SEVERITY_NEGLIGIBLE",
+          "severity_score": 0.119140625
+        },
+        {
+          "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          "probability": "NEGLIGIBLE",
+          "probability_score": 0.14550781,
+          "severity": "HARM_SEVERITY_LOW",
+          "severity_score": 0.29101562
+        }
+      ]
+    }
+  ],
+  "usage_metadata": {
+    "prompt_token_count": 11572,
+    "total_token_count": 11572
+  },
+  "model_version": "gemini-1.5-pro-001"
+}
+2025-03-11 18:57:40,206 - app.services.nl2sql_service - ERROR - /Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py:563 - Error generating enhanced SQL: 'HARASSMENT' is not a valid HarmCategory
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 537, in generate_enhanced_sql
+    result = await app.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1588, in ainvoke
+    async for chunk in self.astream(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1477, in astream
+    async for _ in runner.atick(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/runner.py", line 130, in atick
+    await arun_with_retry(t, retry_policy, stream=self.use_astream)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/retry.py", line 102, in arun_with_retry
+    await task.proc.ainvoke(task.input, config)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 453, in ainvoke
+    input = await asyncio.create_task(coro, context=context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 236, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 390, in generate_sql
+    response_text = await generate_text(prompt, max_output_tokens=VERTEX_AI_MAX_OUTPUT_TOKENS)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 74, in generate_text
+    response = await asyncio.to_thread(
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 654, in generate_content
+    return self._generate_content(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 771, in _generate_content
+    request = self._prepare_request(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 3201, in _prepare_request
+    request_v1beta1 = super()._prepare_request(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 544, in _prepare_request
+    gapic_safety_settings = [
+                            ^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 546, in <listcomp>
+    category=gapic_content_types.HarmCategory(category),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/enum.py", line 712, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/enum.py", line 1135, in __new__
+    raise ve_exc
+ValueError: 'HARASSMENT' is not a valid HarmCategory
+2025-03-11 19:11:38,486 - app.services.nl2sql_service - ERROR - /Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py:576 - Error generating enhanced SQL: When passing a list with SafetySettings objects, every item in a list must be a SafetySetting object.
+Traceback (most recent call last):
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 550, in generate_enhanced_sql
+    result = await app.ainvoke(initial_state)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1588, in ainvoke
+    async for chunk in self.astream(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/__init__.py", line 1477, in astream
+    async for _ in runner.atick(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/runner.py", line 130, in atick
+    await arun_with_retry(t, retry_policy, stream=self.use_astream)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/pregel/retry.py", line 102, in arun_with_retry
+    await task.proc.ainvoke(task.input, config)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 453, in ainvoke
+    input = await asyncio.create_task(coro, context=context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/langgraph/utils/runnable.py", line 236, in ainvoke
+    ret = await asyncio.create_task(coro, context=context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 403, in generate_sql
+    response_text = await generate_text(prompt, max_output_tokens=VERTEX_AI_MAX_OUTPUT_TOKENS)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend/app/services/nl2sql_service.py", line 87, in generate_text
+    response = await asyncio.to_thread(
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 654, in generate_content
+    return self._generate_content(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 771, in _generate_content
+    request = self._prepare_request(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 3201, in _prepare_request
+    request_v1beta1 = super()._prepare_request(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 506, in _prepare_request
+    _validate_generate_content_parameters(
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 177, in _validate_generate_content_parameters
+    _validate_safety_settings_type_as_valid_sequence(safety_settings)
+  File "/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/venv/lib/python3.11/site-packages/vertexai/generative_models/_generative_models.py", line 240, in _validate_safety_settings_type_as_valid_sequence
+    raise TypeError(
+TypeError: When passing a list with SafetySettings objects, every item in a list must be a SafetySetting object.

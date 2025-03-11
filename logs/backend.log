@@ -1,0 +1,53 @@
+INFO:     Will watch for changes in these directories: ['/Users/jskuratowicz/PersonalProjects/NL2SQL-agent/backend']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [29152] using StatReload
+INFO:app.services.bigquery_service:Successfully initialized BigQuery client for project: jsk-dataplex-demo-380508
+2025-03-11 14:40:41,841 - app.core.logging_config - DEBUG - Logging configured successfully
+2025-03-11 14:40:41,842 - app.core.logging_config - INFO - Starting NL2SQL Agent Demo v1.0.0
+2025-03-11 14:40:41,851 - uvicorn.error - INFO - Started server process [29155]
+2025-03-11 14:40:41,851 - uvicorn.error - INFO - Waiting for application startup.
+2025-03-11 14:40:41,851 - uvicorn.error - INFO - Application startup complete.
+2025-03-11 14:40:43,196 - app.api.routes - INFO - Listing tables for demo phase: enhanced
+2025-03-11 14:40:43,196 - app.services.bigquery_service - INFO - Listing tables for demo phase: enhanced
+2025-03-11 14:40:43,196 - app.services.bigquery_service - DEBUG - Getting dataset for demo phase: enhanced
+2025-03-11 14:40:43,197 - google.cloud.bigquery.opentelemetry_tracing - DEBUG - This service is instrumented using OpenTelemetry. OpenTelemetry or one of its components could not be imported; please add compatible versions of opentelemetry-api and opentelemetry-instrumentation packages in order to get BigQuery Tracing data.
+2025-03-11 14:40:43,197 - urllib3.util.retry - DEBUG - Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2025-03-11 14:40:43,198 - google.auth.transport.requests - DEBUG - Making request: POST https://oauth2.googleapis.com/token
+2025-03-11 14:40:43,264 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): oauth2.googleapis.com:443
+2025-03-11 14:40:43,405 - urllib3.connectionpool - DEBUG - https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+2025-03-11 14:40:43,454 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): bigquery.googleapis.com:443
+2025-03-11 14:40:43,831 - urllib3.connectionpool - DEBUG - https://bigquery.googleapis.com:443 "GET /bigquery/v2/projects/jsk-dataplex-demo-380508/datasets/car_crashes/tables?prettyPrint=false HTTP/1.1" 200 None
+2025-03-11 14:40:43,832 - app.utils.performance - INFO - Operation 'bigquery_list_tables' completed in 635.09ms
+2025-03-11 14:40:43,832 - app.services.bigquery_service - INFO - Found 20 tables in dataset car_crashes
+2025-03-11 14:40:43,832 - app.utils.performance - INFO - Function app.services.bigquery_service.list_tables executed in 635.66ms
+2025-03-11 14:40:43,832 - app.api.routes - INFO - Found 20 tables
+2025-03-11 14:40:43,832 - app.utils.performance - INFO - Async function app.api.routes.get_tables executed in 635.96ms
+2025-03-11 14:40:43,833 - app.core.logging_config - INFO - Request completed: GET /api/tables
+2025-03-11 14:40:43,833 - uvicorn.access - INFO - 127.0.0.1:57755 - "GET /api/tables?demo_phase=enhanced HTTP/1.1" 200
+2025-03-11 14:40:43,835 - app.api.routes - INFO - Listing tables for demo phase: enhanced
+2025-03-11 14:40:43,835 - app.services.bigquery_service - INFO - Listing tables for demo phase: enhanced
+2025-03-11 14:40:43,835 - app.services.bigquery_service - DEBUG - Getting dataset for demo phase: enhanced
+2025-03-11 14:40:44,127 - urllib3.connectionpool - DEBUG - https://bigquery.googleapis.com:443 "GET /bigquery/v2/projects/jsk-dataplex-demo-380508/datasets/car_crashes/tables?prettyPrint=false HTTP/1.1" 200 None
+2025-03-11 14:40:44,127 - app.utils.performance - INFO - Operation 'bigquery_list_tables' completed in 292.52ms
+2025-03-11 14:40:44,128 - app.services.bigquery_service - INFO - Found 20 tables in dataset car_crashes
+2025-03-11 14:40:44,128 - app.utils.performance - INFO - Function app.services.bigquery_service.list_tables executed in 292.89ms
+2025-03-11 14:40:44,128 - app.api.routes - INFO - Found 20 tables
+2025-03-11 14:40:44,128 - app.utils.performance - INFO - Async function app.api.routes.get_tables executed in 293.12ms
+2025-03-11 14:40:44,128 - app.core.logging_config - INFO - Request completed: GET /api/tables
+2025-03-11 14:40:44,128 - uvicorn.access - INFO - 127.0.0.1:57755 - "GET /api/tables?demo_phase=enhanced HTTP/1.1" 200
+2025-03-11 14:40:45,868 - app.api.routes - INFO - Getting schema for table: accident, demo phase: enhanced
+2025-03-11 14:40:45,869 - app.services.bigquery_service - INFO - Getting schema for table accident in demo phase: enhanced
+2025-03-11 14:40:45,869 - app.services.bigquery_service - DEBUG - Getting dataset for demo phase: enhanced
+2025-03-11 14:40:46,220 - urllib3.connectionpool - DEBUG - https://bigquery.googleapis.com:443 "GET /bigquery/v2/projects/jsk-dataplex-demo-380508/datasets/car_crashes/tables/accident?prettyPrint=false HTTP/1.1" 200 None
+2025-03-11 14:40:46,223 - app.utils.performance - INFO - Operation 'bigquery_get_table_schema' completed in 353.88ms
+2025-03-11 14:40:46,223 - app.services.bigquery_service - INFO - Retrieved schema for table accident with 54 columns
+2025-03-11 14:40:46,223 - app.utils.performance - INFO - Function app.services.bigquery_service.get_table_schema executed in 354.76ms
+2025-03-11 14:40:46,223 - app.api.routes - INFO - Schema retrieved with 54 columns
+2025-03-11 14:40:46,224 - app.utils.performance - INFO - Async function app.api.routes.get_schema executed in 355.37ms
+2025-03-11 14:40:46,224 - app.core.logging_config - INFO - Request completed: GET /api/tables/accident/schema
+2025-03-11 14:40:46,224 - uvicorn.access - INFO - 127.0.0.1:57755 - "GET /api/tables/accident/schema?demo_phase=enhanced HTTP/1.1" 200
+2025-03-11 14:40:51,068 - uvicorn.error - INFO - Shutting down
+2025-03-11 14:40:51,169 - uvicorn.error - INFO - Waiting for application shutdown.
+2025-03-11 14:40:51,169 - uvicorn.error - INFO - Application shutdown complete.
+2025-03-11 14:40:51,169 - uvicorn.error - INFO - Finished server process [29155]
+INFO:     Stopping reloader process [29152]
