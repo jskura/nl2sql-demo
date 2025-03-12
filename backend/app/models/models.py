@@ -30,6 +30,7 @@ class NL2SQLResponse(BaseModel):
     """Response from NL2SQL conversion"""
     sql: str
     explanation: Optional[str] = None
+    rewritten_question: Optional[str] = None
     
 class QueryHistoryItem(BaseModel):
     """Item in the query history"""

@@ -25,6 +25,10 @@ VERTEX_AI_MAX_OUTPUT_TOKENS = int(os.getenv("VERTEX_AI_MAX_OUTPUT_TOKENS", "1024
 VERTEX_AI_TEMPERATURE = float(os.getenv("VERTEX_AI_TEMPERATURE", "0.2"))
 VERTEX_AI_SAFETY_THRESHOLD = os.getenv("VERTEX_AI_SAFETY_THRESHOLD", "BLOCK_ONLY_HIGH")  # Options: BLOCK_NONE, BLOCK_ONLY_HIGH, BLOCK_MEDIUM_AND_ABOVE, BLOCK_LOW_AND_ABOVE
 
+# LangGraph agent configuration
+LANGGRAPH_NUM_CANDIDATES = int(os.getenv("LANGGRAPH_NUM_CANDIDATES", "3"))
+LANGGRAPH_TEMPERATURES = [float(t) for t in os.getenv("LANGGRAPH_TEMPERATURES", "0.0,0.2,0.5").split(",")]
+
 # Logging configuration
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_FORMAT = os.getenv("LOG_FORMAT", "standard")  # standard, detailed, json

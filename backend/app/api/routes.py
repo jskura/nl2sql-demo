@@ -252,13 +252,26 @@ async def enhanced_nl2sql(
 @async_log_execution_time
 async def agent_nl2sql(
     request: Request,
-    nl2sql_request: NL2SQLRequest,
+    nl2sql_request: Dict[str, Any] = Body(...),
     demo_phase: str = Query("agent", description="Demo phase (basic, enhanced, agent)")
 ):
     """Generate SQL from natural language using an agent approach"""
     request_id = getattr(request.state, "request_id", str(uuid.uuid4()))
-    question = nl2sql_request.question
-    table_name = nl2sql_request.table_name
+    question = nl2sql_request.get("question")
+    
+    # Handle both old and new payload formats
+    table_name = nl2sql_request.get("table_name")
+    additional_tables = nl2sql_request.get("additional_tables", [])
+    
+    # If table_name is not provided, try to get it from table_names
+    if not table_name and "table_names" in nl2sql_request:
+        table_names = nl2sql_request.get("table_names", [])
+        if table_names and len(table_names) > 0:
+            table_name = table_names[0]
+            additional_tables = table_names[1:]
+    
+    if not table_name:
+        raise HTTPException(status_code=400, detail="Table name is required")
     
     logger.info(f"Agent NL2SQL request for table: {table_name}", 
                 extra={"table_name": table_name})
@@ -291,7 +304,8 @@ async def agent_nl2sql(
             sql=response.sql,
             demo_phase=demo_phase,
             context={
-                "agent_reasoning": response.explanation
+                "agent_reasoning": response.explanation,
+                "rewritten_question": response.rewritten_question
             }
         )
         
@@ -302,6 +316,90 @@ async def agent_nl2sql(
     except Exception as e:
         logger.exception(f"Failed to generate SQL from question: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to generate SQL: {str(e)}")
+
+@router.post("/nl2sql/langgraph", response_model=NL2SQLResponse)
+@async_log_execution_time
+async def langgraph_nl2sql(
+    request: Request,
+    nl2sql_request: Dict[str, Any] = Body(...),
+    demo_phase: str = Query("agent", description="Demo phase (basic, enhanced, agent)"),
+    num_candidates: Optional[int] = Query(None, description="Number of candidate queries to generate"),
+    temperatures: Optional[str] = Query(None, description="Comma-separated list of temperatures for each candidate")
+):
+    """Generate SQL from natural language using a LangGraph agent approach"""
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4()))
+    question = nl2sql_request.get("question")
+    
+    # Handle both old and new payload formats
+    table_name = nl2sql_request.get("table_name")
+    additional_tables = nl2sql_request.get("additional_tables", [])
+    
+    # If table_name is not provided, try to get it from table_names
+    if not table_name and "table_names" in nl2sql_request:
+        table_names = nl2sql_request.get("table_names", [])
+        if table_names and len(table_names) > 0:
+            table_name = table_names[0]
+            additional_tables = table_names[1:]
+    
+    if not table_name:
+        raise HTTPException(status_code=400, detail="Table name is required")
+    
+    logger.info(f"LangGraph NL2SQL request for table: {table_name}", 
+                extra={"table_name": table_name})
+    logger.debug(f"Question: {question}", extra={"question": question})
+    
+    # Parse temperatures if provided
+    temp_list = None
+    if temperatures:
+        try:
+            temp_list = [float(t) for t in temperatures.split(",")]
+            logger.info(f"Using custom temperatures: {temp_list}")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid temperatures format. Use comma-separated floats.")
+    
+    try:
+        # Get the table schema
+        schema = get_table_schema(table_name, demo_phase)
+        
+        # Get a sample of data
+        sample = get_data_sample(table_name, 5, demo_phase)
+        
+        # Get previous queries for context
+        previous_queries = get_history(table_name=table_name, limit=3)
+        
+        # Generate SQL using the LangGraph agent approach
+        response = await generate_agent_sql(
+            question=question,
+            schema=schema,
+            table_description=schema.description,
+            column_descriptions={col.name: col.description for col in schema.columns if col.description},
+            data_sample=sample.data,
+            previous_queries=previous_queries,
+            use_langgraph=True,
+            num_candidates=num_candidates,
+            temperatures=temp_list
+        )
+        
+        # Add to query history
+        add_to_query_history(
+            question=question,
+            table_name=table_name,
+            sql=response.sql,
+            demo_phase=demo_phase,
+            context={
+                "agent_reasoning": response.explanation,
+                "rewritten_question": response.rewritten_question,
+                "agent_type": "langgraph"
+            }
+        )
+        
+        logger.info(f"Generated SQL query with LangGraph agent, length {len(response.sql)}", 
+                    extra={"sql_length": len(response.sql)})
+        
+        return response
+    except Exception as e:
+        logger.exception(f"Failed to generate SQL from question with LangGraph agent: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate SQL with LangGraph agent: {str(e)}")
 
 @router.get("/history", response_model=List[QueryHistoryItem])
 @async_log_execution_time

@@ -23,6 +23,8 @@ from app.core.config import (
 )
 from app.services.agent_tools import get_agent_tools
 from app.utils.performance import async_log_execution_time, PerformanceTracker
+from app.services.query_rewriter import QueryRewriter
+from app.services.langgraph_agent import LangGraphAgent
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -744,16 +746,13 @@ async def generate_agent_sql(
     table_description: Optional[str] = None,
     column_descriptions: Optional[Dict[str, str]] = None,
     data_sample: Optional[List[Dict[str, Any]]] = None,
-    previous_queries: Optional[List[QueryHistoryItem]] = None
+    previous_queries: Optional[List[QueryHistoryItem]] = None,
+    use_langgraph: bool = False,
+    num_candidates: Optional[int] = None,
+    temperatures: Optional[List[float]] = None
 ) -> NL2SQLResponse:
     """
-    Generate SQL from natural language using an advanced agent approach.
-    
-    This agent:
-    1. Extracts all previously run queries on the table
-    2. Suggests the best one to answer the current question
-    3. Runs multiple enhanced agents in parallel threads
-    4. Selects the best result
+    Generate SQL from natural language using an agent-based approach.
     
     Args:
         question: The natural language question
@@ -762,25 +761,56 @@ async def generate_agent_sql(
         column_descriptions: Optional descriptions for columns
         data_sample: Optional sample data from the table
         previous_queries: List of previously run queries on this table
+        use_langgraph: Whether to use the LangGraph agent
+        num_candidates: Number of candidate queries to generate (for LangGraph agent)
+        temperatures: List of temperatures to use for each candidate (for LangGraph agent)
         
     Returns:
         NL2SQLResponse with generated SQL and explanation
     """
-    logger.info(f"Generating agent SQL for question: {question}")
+    logger.info(f"Generating SQL with agent for question: {question}")
     
-    if USE_MOCK_RESPONSES:
-        logger.debug("Using mock response for agent SQL generation")
-        # Return mock response
-        await asyncio.sleep(2)  # Simulate API delay
-        return NL2SQLResponse(
-            sql="SELECT COUNT(*) FROM accident GROUP BY severity_code ORDER BY COUNT(*) DESC",
-            explanation="This is a mock response for demonstration purposes. In advanced mode, I would analyze previous queries, suggest the best one, and run multiple agents in parallel to generate the optimal SQL query."
+    # If use_langgraph is True, use the LangGraph agent
+    if use_langgraph:
+        logger.info("Using LangGraph agent for SQL generation")
+        
+        # Use default values from config if not provided
+        if num_candidates is None:
+            from app.core.config import LANGGRAPH_NUM_CANDIDATES
+            num_candidates = LANGGRAPH_NUM_CANDIDATES
+            
+        if temperatures is None:
+            from app.core.config import LANGGRAPH_TEMPERATURES
+            temperatures = LANGGRAPH_TEMPERATURES
+            
+        logger.info(f"Using {num_candidates} candidates with temperatures: {temperatures}")
+        
+        return await LangGraphAgent.generate_sql(
+            question=question,
+            schema=schema,
+            additional_schemas=None,
+            table_description=table_description,
+            column_descriptions=column_descriptions,
+            data_sample=data_sample,
+            previous_queries=previous_queries,
+            generate_text_func=generate_text,
+            num_candidates=num_candidates,
+            temperatures=temperatures
         )
     
     try:
         # Format schema for prompt
         with PerformanceTracker("format_schema_for_prompt"):
             schema_text = format_schema_for_prompt(schema)
+        
+        # Step 0: Rewrite the question to better match table metadata
+        logger.info("Rewriting question to better match table metadata")
+        rewritten_question = await QueryRewriter.rewrite_query(
+            question=question,
+            schema=schema,
+            generate_text_func=generate_text
+        )
+        logger.info(f"Rewritten question: {rewritten_question}")
         
         # Step 1: Analyze previous queries and suggest the best one
         best_previous_query = None
@@ -808,7 +838,7 @@ async def generate_agent_sql(
             
             {previous_queries_text}
             
-            New Question: {question}
+            New Question: {rewritten_question}
             
             Analyze the previous queries and determine which one would be the best starting point to answer the new question.
             Provide your response in the following format:
@@ -842,11 +872,11 @@ async def generate_agent_sql(
         tasks = []
         
         # Approach 1: Basic generation with schema only
-        tasks.append(generate_basic_sql(question, schema))
+        tasks.append(generate_basic_sql(rewritten_question, schema))
         
         # Approach 2: Enhanced generation with schema and metadata
         tasks.append(generate_enhanced_sql(
-            question, 
+            rewritten_question, 
             schema, 
             table_description=table_description,
             column_descriptions=column_descriptions
@@ -864,7 +894,7 @@ async def generate_agent_sql(
             Previous Question: {best_previous_query.question}
             Previous SQL: {best_previous_query.sql}
             
-            New Question: {question}
+            New Question: {rewritten_question}
             
             Modify the previous SQL query to answer the new question. The response should be in the following format:
             
@@ -927,7 +957,7 @@ async def generate_agent_sql(
             
             {sample_text}
             
-            User Question: {question}
+            User Question: {rewritten_question}
             
             Generate a SQL query that answers the user's question. The response should be in the following format:
             
@@ -998,7 +1028,7 @@ async def generate_agent_sql(
         Table Schema:
         {schema_text}
         
-        User Question: {question}
+        User Question: {rewritten_question}
         
         SQL Options:
         """
@@ -1052,6 +1082,7 @@ async def generate_agent_sql(
         
         # Add information about the agent process
         agent_process = "\n\nAdvanced SQL Generation Process:\n"
+        agent_process += f"- Rewritten the original question to better match table metadata\n"
         agent_process += f"- Generated {len(sql_options)} SQL queries using different approaches\n"
         if best_previous_query:
             agent_process += f"- Analyzed {len(previous_queries)} previous queries and selected the best one as a starting point\n"
@@ -1063,7 +1094,8 @@ async def generate_agent_sql(
         
         return NL2SQLResponse(
             sql=best_option["sql"],
-            explanation=combined_explanation
+            explanation=combined_explanation,
+            rewritten_question=rewritten_question
         )
     except Exception as e:
         logger.exception(f"Error generating agent SQL: {str(e)}")
